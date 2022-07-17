@@ -77,7 +77,7 @@ const VideoCard: FC<
   );
 };
 
-const GameDetail = () => {
+export const GameDetail = () => {
   const { gameName, isIndoor } = useGameDetailContext();
   return (
     <div className="w-[90%] mt-10 mx-auto space-y-2 text-sm">
