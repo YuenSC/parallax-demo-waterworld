@@ -1,3 +1,4 @@
+import { MotionValue, motion, useTransform } from "framer-motion";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -11,41 +12,189 @@ import {
   GameDetailContextProvider,
   useGameDetailContext,
 } from "../context/GameDetailContext";
+import Page from "../parallax/Page";
+import PageContainer from "../parallax/PageContainer";
 import ageLogo from "../public/ageLogo.svg";
 import fastPassLogo from "../public/fastPassLogo.svg";
 import full360Logo from "../public/full360Logo.svg";
 import heightLogo from "../public/heightLogo.svg";
 import levelLogo from "../public/levelLogo.svg";
-import icon from "../public/thrill-valley.svg";
+import homePageIcon from "../public/thrill-valley.svg";
 import typeLogo from "../public/typeLogo.svg";
 import weightLogo from "../public/weightLogo.svg";
+
+const links = [
+  {
+    label: "首頁",
+    href: "/",
+    icon: homePageIcon,
+  },
+  {
+    label: "景點設施",
+    href: "/",
+  },
+  {
+    label: "沖天瀑布",
+    href: "/",
+  },
+];
 
 const Home: NextPage = () => {
   const gameName = "絕嶺深谷";
   const isIndoor = true;
 
   return (
-    <GameDetailContextProvider value={{ gameName, isIndoor }}>
-      <VideoCard src="/skyhigh-falls.mp4" containerClassName="min-h-[92vh]">
-        <div className="text-white space-y-4">
-          <h1 className="text-4xl ">沖天瀑布</h1>
-          <GameLabel iconSrc={icon} gameName={gameName} isIndoor={isIndoor} />
-          <p className="text-sm leading-6">
-            沖天瀑布為熱愛冒險的勇者帶來刺激體驗，坐在巨型水泡上穿越蜿蜒曲折的地帶，由滑板底部衝上與水平成70度角的巨型大滑板頂端。
-          </p>
-        </div>
-      </VideoCard>
-      <VideoCard src="/skyhigh-falls-2.mp4" containerClassName="min-h-[100vh]">
-        <div className="text-white mt-32">
-          <p className="flex justify-center text-sm leading-6 text-center">
-            在最高點上短暫懸浮，體驗一飛沖天的感覺，然後高速飛墜，迂迴滑行結束旅程。
-          </p>
-        </div>
-      </VideoCard>
+    <>
+      {/* Small Screen */}
+      <div className="lg:hidden">
+        <GameDetailContextProvider value={{ gameName, isIndoor }}>
+          <VideoCard src="/skyhigh-falls.mp4" containerClassName="min-h-[92vh]">
+            <div className="text-white space-y-4">
+              <h1 className="text-4xl ">沖天瀑布</h1>
+              <GameLabel
+                iconSrc={homePageIcon}
+                gameName={gameName}
+                isIndoor={isIndoor}
+              />
+              <p className="text-sm leading-6">
+                沖天瀑布為熱愛冒險的勇者帶來刺激體驗，坐在巨型水泡上穿越蜿蜒曲折的地帶，由滑板底部衝上與水平成70度角的巨型大滑板頂端。
+              </p>
+            </div>
+          </VideoCard>
+          <VideoCard
+            src="/skyhigh-falls-2.mp4"
+            containerClassName="min-h-[100vh]"
+          >
+            <div className="text-white mt-32">
+              <p className="flex justify-center text-sm leading-6 text-center">
+                在最高點上短暫懸浮，體驗一飛沖天的感覺，然後高速飛墜，迂迴滑行結束旅程。
+              </p>
+            </div>
+          </VideoCard>
 
-      <GameDetail />
-      <div className="h-screen"></div>
-    </GameDetailContextProvider>
+          <GameDetail />
+        </GameDetailContextProvider>
+      </div>
+
+      {/* Large Screen */}
+      <div className="hidden lg:block">
+        <GameDetailContextProvider value={{ gameName, isIndoor }}>
+          <PageContainer numOfPages={4}>
+            <Page
+              page={0}
+              pageSize={2}
+              renderLeft={(pageProgress) => (
+                <MainPageVideo pageProgress={pageProgress} />
+              )}
+              renderRight={() => (
+                <div className="h-full w-full flex flex-col justify-center px-16">
+                  <div
+                    className="mx-auto flex flex-col"
+                    style={{
+                      width: "90%",
+                    }}
+                  >
+                    <div className="flex flex-row items-center space-x-2">
+                      {links.map((item, index) => {
+                        const isLast = index === links.length - 1;
+                        return (
+                          <>
+                            <div
+                              key={item.label}
+                              className="flex flex-row items-center"
+                            >
+                              {item.icon && (
+                                <div className="mr-2 pb-1">
+                                  <Image src={item.icon} alt="icon" />
+                                </div>
+                              )}
+
+                              {isLast ? (
+                                <p className="text-sm">{item.label}</p>
+                              ) : (
+                                <Link href={item.href} passHref>
+                                  <a className="text-sm hover:text-orange-400 transition-all">
+                                    {item.label}
+                                  </a>
+                                </Link>
+                              )}
+                            </div>
+
+                            {!isLast && (
+                              <div
+                                className="w-4"
+                                style={{
+                                  height: "1px",
+                                  borderTop: "1px solid lightblue",
+                                }}
+                              ></div>
+                            )}
+                          </>
+                        );
+                      })}
+                    </div>
+
+                    <div
+                      className="text-7xl text-yellow-300 mt-10 mb-5"
+                      style={{ textShadow: "3px 3px 0 #0066b8" }}
+                    >
+                      沖天瀑布
+                    </div>
+
+                    <GameLabel
+                      iconSrc={homePageIcon}
+                      gameName={gameName}
+                      isIndoor={isIndoor}
+                    />
+                    <div className="mt-10">
+                      沖天瀑布為熱愛冒險的勇者帶來刺激體驗，坐在巨型水泡上穿越蜿蜒曲折的地帶，由滑板底部衝上與水平成70度角的巨型大滑板頂端
+                    </div>
+                  </div>
+                </div>
+              )}
+            />
+            <Page
+              page={2}
+              renderLeft={() => (
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  className="h-full w-full object-cover"
+                >
+                  <source
+                    src={"/skyhigh-falls-2.mp4"}
+                    type="video/mp4"
+                  ></source>
+                </video>
+              )}
+              renderRight={() => (
+                <div className="h-full w-full px-16">
+                  在最高點上短暫懸浮，體驗一飛沖天的感覺，然後高速飛墜，迂迴滑行結束旅程。
+                </div>
+              )}
+            />
+            <Page
+              page={3}
+              renderLeft={() => (
+                <Image
+                  src={"/skyhigh_falls.jpeg"}
+                  alt="image"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              )}
+              renderRight={() => (
+                <div className="px-16">
+                  <GameDetail />
+                </div>
+              )}
+            />
+          </PageContainer>
+        </GameDetailContextProvider>
+      </div>
+      <div className="h-[300px]"></div>
+    </>
   );
 };
 
@@ -85,7 +234,7 @@ export const GameDetail = () => {
       <h2 className="text-2xl text-blue-900">沖天瀑布</h2>
       <GameLabel
         variant="black"
-        iconSrc={icon}
+        iconSrc={homePageIcon}
         gameName={gameName}
         isIndoor={isIndoor}
         level={3}
@@ -166,7 +315,7 @@ export const GameDetail = () => {
               <a>
                 <ButtonWithOverlay>
                   <div className="flex flex-row items-center space-x-3 relative z-10">
-                    <p>地圖</p>
+                    <p className="whitespace-nowrap">地圖</p>
                     <IoMdArrowRoundForward size={20} />
                   </div>
                 </ButtonWithOverlay>
@@ -178,7 +327,7 @@ export const GameDetail = () => {
               <a>
                 <ButtonWithOverlay hasOverlay={false}>
                   <div className="flex flex-row items-center space-x-4 relative z-10">
-                    <p className="pr-2">虛擬導覽</p>
+                    <p className="pr-2 whitespace-nowrap">虛擬導覽</p>
                     <Image src={full360Logo} alt="360 degree logo" />
                   </div>
                 </ButtonWithOverlay>
@@ -228,5 +377,37 @@ const ButtonWithOverlay: FC<PropsWithChildren<{ hasOverlay?: boolean }>> = ({
     >
       {children}
     </button>
+  );
+};
+
+// For Large Screen
+
+const MainPageVideo = ({
+  pageProgress,
+}: {
+  pageProgress: MotionValue<number>;
+}) => {
+  const opacity = useTransform(pageProgress, (value) => {
+    if (value < 1) return 1;
+    return 0;
+  });
+
+  return (
+    <div className="h-full w-full">
+      <video autoPlay muted loop className="h-full w-full object-cover">
+        <source src={"/skyhigh-falls.mp4"} type="video/mp4"></source>
+      </video>
+      <motion.div
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-white z-50"
+        style={{
+          fontSize: "clamp(80px, 9vw, 120px)",
+          textShadow: "6px 5px 0 #0066b8",
+          opacity,
+          transition: "all 0.3s",
+        }}
+      >
+        沖天瀑布
+      </motion.div>
+    </div>
   );
 };

@@ -45,8 +45,6 @@ export const TileWrapper: FC<PropsWithChildren<WrapperProps>> = ({
     currentPage = percentY * numOfPages;
   }
 
-  console.log(currentPage);
-
   return (
     <TileContext.Provider value={{ currentPage, numOfPages }}>
       <div
@@ -75,8 +73,11 @@ interface Props {
   renderContent: (props: { progress: number }) => any;
 }
 
+let tileRerenderCount = 0;
 export const Tile: FC<PropsWithChildren<Props>> = ({ page, renderContent }) => {
   const { currentPage, numOfPages } = useContext(TileContext);
+
+  console.log("Tile tileRerenderCount :>> ", tileRerenderCount++);
   const progress = Math.max(0, currentPage - page);
 
   const refContainer = useRef<HTMLDivElement>(null);
